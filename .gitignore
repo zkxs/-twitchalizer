@@ -1,0 +1,17 @@
+# Build output
+target/
+
+# IntelliJ IDEA
+.idea/
+
+# Eclipse
+.settings/
+.classpath
+.project
+/bin/
+
+# Windows junk
+desktop.ini
+
+# Mac junk
+.DS_Store
