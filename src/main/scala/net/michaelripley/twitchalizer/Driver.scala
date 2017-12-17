@@ -1,7 +1,6 @@
 package net.michaelripley.twitchalizer
 
 import java.io.FileInputStream
-import java.util.concurrent.{ExecutorService, Executors}
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.util.concurrent.{FutureCallback, Futures, MoreExecutors}
@@ -10,21 +9,28 @@ import net.michaelripley.twitchalizer.dto.twitch.livegames.LiveGames
 import net.michaelripley.twitchalizer.singletons.ObjectMapperInstance
 import org.asynchttpclient.extras.guava.ListenableFutureAdapter
 import org.asynchttpclient.{AsyncHttpClient, DefaultAsyncHttpClient, Response}
+import org.json4s._
+import org.json4s.jackson.JsonMethods._
+import org.slf4j.{Logger, LoggerFactory}
 
 object Driver {
 
+  val log: Logger = LoggerFactory.getLogger(Driver.getClass)
+
   lazy val mapper: ObjectMapper = ObjectMapperInstance.instance
   lazy val httpClient: AsyncHttpClient = new DefaultAsyncHttpClient()
-  lazy val executor: ExecutorService = Executors.newWorkStealingPool()
+
+  implicit val formats: DefaultFormats = DefaultFormats // Brings in default json date formats, etc.
+
 
   def main(args: Array[String]): Unit = {
 
 
     // read settings
     val inputStream = new FileInputStream(args(0)) // first argument is the path to the settings
-    val settings = mapper.readValue(inputStream, classOf[Settings])
+    val settings = parse(inputStream).extract[Settings] // parse settings JSON
 
-    println(settings)
+    log.debug(settings.toString)
 
     val twitchUrl = s"https://api.twitch.tv/api/users/${settings.username}/follows/games/live?on_site=1"
 
@@ -46,20 +52,20 @@ object Driver {
       def onFailure(t: Throwable): Unit = {
         t.printStackTrace()
       }
-    }, executor)
+    }, MoreExecutors.directExecutor())
 
-    println(s"end of thread ${Thread.currentThread().getName}")
+    log.debug("end of main thread")
   }
 
   def parseResponse(response: Response): Unit = {
-    println(s"parsing json on thread ${Thread.currentThread().getName}")
-    val bytes = response.getResponseBodyAsBytes
-    println("got bytes")
-    println(new String(bytes, "UTF-8"))
-    val games = mapper.readValue(bytes, classOf[LiveGames])
-    println("done parsing, will now print")
+    log.debug("parsing json")
+    val responseBody = response.getResponseBody
+    log.debug(s"extracted response body: $responseBody")
+    val games = parse(responseBody).extract[LiveGames]
+    log.debug("done parsing, will now print")
     println(games)
-    println("end of parseResponse()")
+    httpClient.close()
+    log.debug("end of parseResponse()")
   }
 
 }
