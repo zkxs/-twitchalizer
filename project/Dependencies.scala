@@ -4,7 +4,8 @@ object Dependencies {
 
   lazy val dependencies = Seq(
     "org.slf4j" % "slf4j-api" % "1.7.25",
-    "org.slf4j" % "slf4j-jdk14" % "1.7.25",
+    "org.slf4j" % "slf4j-log4j12" % "1.7.25",
+    "log4j" % "log4j" % "1.2.17",
     "com.fasterxml.jackson.core" % "jackson-databind" % "2.9.2",
     "com.fasterxml.jackson.core" % "jackson-annotations" % "2.9.2",
     "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.9.2",
