@@ -2,11 +2,9 @@ package net.michaelripley.twitchalizer
 
 import java.io.FileInputStream
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.util.concurrent.{FutureCallback, Futures, MoreExecutors}
 import net.michaelripley.twitchalizer.dto.settings.Settings
 import net.michaelripley.twitchalizer.dto.twitch.livegames.LiveGames
-import net.michaelripley.twitchalizer.singletons.ObjectMapperInstance
 import org.asynchttpclient.extras.guava.ListenableFutureAdapter
 import org.asynchttpclient.{AsyncHttpClient, DefaultAsyncHttpClient, Response}
 import org.json4s._
@@ -17,7 +15,6 @@ object Driver {
 
   val log: Logger = LoggerFactory.getLogger(Driver.getClass)
 
-  lazy val mapper: ObjectMapper = ObjectMapperInstance.instance
   lazy val httpClient: AsyncHttpClient = new DefaultAsyncHttpClient()
 
   implicit val formats: DefaultFormats = DefaultFormats // Brings in default json date formats, etc.
