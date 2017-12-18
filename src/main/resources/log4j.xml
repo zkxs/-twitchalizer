@@ -10,7 +10,7 @@
     </appender>
 
     <logger name="net.michaelripley">
-        <level value="debug"/>
+        <level value="info"/>
     </logger>
 
     <root>
