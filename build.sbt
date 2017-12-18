@@ -12,5 +12,5 @@ lazy val root = (project in file(".")).
     libraryDependencies ++= testLibraries,
     libraryDependencies ++= dependencies,
     scalacOptions ++= Seq("-unchecked", "-deprecation"),
-    mainClass := Some("net.michaelripley.emdashbot.EmDashBot")
+    mainClass := Some("net.michaelripley.twitchalizer.Driver")
   )
