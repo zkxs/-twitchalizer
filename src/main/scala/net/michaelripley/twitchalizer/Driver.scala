@@ -4,7 +4,7 @@ import java.io.FileInputStream
 
 import com.google.common.util.concurrent.{FutureCallback, Futures, MoreExecutors}
 import net.michaelripley.twitchalizer.dto.settings.Settings
-import net.michaelripley.twitchalizer.dto.twitch.livegames.LiveGames
+import net.michaelripley.twitchalizer.dto.twitch.livegames._
 import org.asynchttpclient.extras.guava.ListenableFutureAdapter
 import org.asynchttpclient.{AsyncHttpClient, DefaultAsyncHttpClient, Response}
 import org.json4s._
@@ -61,12 +61,12 @@ object Driver {
     val games = parse(responseBody).extract[LiveGames]
     log.debug("done parsing, will now print")
 
-    println(s"${games._total} games are currently live. Sorted by viewer/channel ratio:\n")
+    println(s"${games._total} games are currently live. Sorted by: ${Game.rankFormula}\n")
 
 //    games.follows.sortWith((a, b) => a.viewers > b.viewers).foreach(println) // most viewers
 //    games.follows.filter(_.viewers >= 5).sortBy(_.viewers).foreach(println) // fewest viewers, but at least 5 viewers
 //    games.follows.sortWith((a, b) => a.channels > b.channels).foreach(println) // most channels
-    games.follows.sortWith((a, b) => a.viewersPerChannel > b.viewersPerChannel).foreach(println) // most viewers/channel
+    games.follows.sortWith((a, b) => a.rank > b.rank).foreach(println) // most metric
 
 
     httpClient.close()
